@@ -1,0 +1,9 @@
+{% extends 'requestdataapp/base.html' %}
+
+{%  block title %}
+Demo request query params
+{% endblock %}
+
+{% block body %}
+  <h1>Hello {% firstof request.GET.name 'User' %}</h1>
+{% endblock %}
