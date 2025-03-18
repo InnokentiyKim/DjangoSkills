@@ -26,4 +26,16 @@ class ProductCreateViewTestCase(TestCase):
             "discount": "10",
         }
         response = self.client.post(reverse("shopapp:products_create"), data=data, HTTP_USER_AGENT='Mozilla/5.0')
-        self.assertTrue(Product.objects.filter(name=self.product_name).exists())
+        self.assertFalse(Product.objects.filter(name=self.product_name).exists())
+
+
+class ProductsListViewTestCase(TestCase):
+    fixtures = ["products-fixture.json"]
+
+    def test_products(self):
+        response = self.client.get(reverse("shopapp:products_list"), HTTP_USER_AGENT='Mozilla/5.0')
+        self.assertQuerySetEqual(qs=Product.objects.filter(archived=False).all(),
+                                 values=(p.pk for p in response.context["products"]),
+                                 transform=lambda p: p.pk
+                                 )
+        self.assertTemplateUsed(response, "shopapp/products-list.html")
