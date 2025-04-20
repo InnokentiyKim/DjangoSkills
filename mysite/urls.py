@@ -20,6 +20,7 @@ from django.conf.urls.static import static
 from django.urls import path, include
 
 urlpatterns = [
+    path('admin/doc/', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
     path('shop/', include('shopapp.urls')),
     path('req/', include('requestdataapp.urls')),
