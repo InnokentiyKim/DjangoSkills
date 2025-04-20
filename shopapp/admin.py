@@ -1,13 +1,17 @@
 from django.contrib import admin
 from django.db.models import QuerySet
 from django.http import HttpRequest
-from shopapp.models import Product, Order
+from shopapp.models import Product, Order, ProductImage
 from .admin_mixins import ExportAsCSVMixin
 
 
 @admin.action(description='Archive products')
 def mark_as_archived(modeladmin: admin.ModelAdmin, request: HttpRequest, queryset: QuerySet):
     queryset.update(archived=True)
+
+class ProductImageInline(admin.StackedInline):
+    model = ProductImage
+    extra = 1
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin, ExportAsCSVMixin):
@@ -16,6 +20,7 @@ class ProductAdmin(admin.ModelAdmin, ExportAsCSVMixin):
     list_display_links = ['pk', 'name']
     ordering = ['pk', ]
     search_fields = ['name', 'description']
+    inlines = [ProductImageInline, ]
     fieldsets = [
         (None, {
             'fields': ['name', 'description']
@@ -23,6 +28,9 @@ class ProductAdmin(admin.ModelAdmin, ExportAsCSVMixin):
         ('Price options', {
             'fields': ['price', 'discount'],
             'classes': ['collapse']
+        }),
+        ('Images', {
+            'fields': ['preview', ],
         }),
         ('Extra options', {
             'fields': ['archived'],
