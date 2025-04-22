@@ -7,8 +7,8 @@ def product_preview_dir_path(instance: "Product", filename: str) -> str:
 class Product(models.Model):
     class Meta:
         ordering = ['name', ]
-    name = models.CharField(max_length=120)
-    description = models.TextField()
+    name = models.CharField(max_length=120, db_index=True)
+    description = models.TextField(null=False, db_index=True)
     price = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     discount = models.SmallIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)

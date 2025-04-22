@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 
-from django.conf.global_settings import LOGIN_REDIRECT_URL, MEDIA_URL, MEDIA_ROOT
+from django.conf.global_settings import LOGIN_REDIRECT_URL, MEDIA_URL, MEDIA_ROOT, LOGGING
 from django.urls import reverse_lazy
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.admindocs',
     'shopapp.apps.ShopappConfig',
     'requestdataapp.apps.RequestdataappConfig',
-    'myauth.apps.MyauthConfig'
+    'myauth.apps.MyauthConfig',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -136,3 +137,29 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = reverse_lazy("myauth:about-me")
 LOGIN_URL = reverse_lazy("myauth:login")
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+LOGGING = {
+    'version': 1,
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        }
+    },
+}
