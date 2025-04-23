@@ -10,7 +10,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write("Creating order with products")
         user = User.objects.get(username="admin")
-        products = Product.objects.all()
+        # products = Product.objects.defer("description", "price", "created_at").all()
+        products = Product.objects.only("id").all()
         order, created = Order.objects.get_or_create(
             delivery_address="Moscow",
             promocode="12345",
