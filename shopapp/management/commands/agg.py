@@ -1,4 +1,3 @@
-from email.policy import default
 
 from django.core.management import BaseCommand
 from shopapp.models import Product, Order

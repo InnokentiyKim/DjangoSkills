@@ -5,13 +5,15 @@ from timeit import default_timer as timer
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
-
+import logging
 from .forms import GroupForm
 from django.views import View
 
 from .forms import ProductForm, OrderForm
 from .models import Product, Order, ProductImage
 
+
+logger = logging.getLogger(__name__)
 
 class ShopIndexView(View):
     def get(self, request: HttpRequest) -> HttpResponse:
@@ -24,6 +26,8 @@ class ShopIndexView(View):
             "time_running": timer(),
             "products": products,
         }
+        logger.debug("Products for shop index: %s", products)
+        logger.info("Rendering shop index")
         return render(request, 'shopapp/shop-index.html', context=context)
 
 
