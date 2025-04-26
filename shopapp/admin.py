@@ -1,8 +1,12 @@
 from django.contrib import admin
 from django.db.models import QuerySet
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import render
+from django.urls import path
+
 from shopapp.models import Product, Order, ProductImage
 from .admin_mixins import ExportAsCSVMixin
+from .forms import CSVImportForm
 
 
 @admin.action(description='Archive products')
@@ -15,6 +19,7 @@ class ProductImageInline(admin.StackedInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin, ExportAsCSVMixin):
+    change_list_template = 'shopapp/products_changelist.html'
     actions = [mark_as_archived, 'export_to_csv']
     list_display = ['pk', 'name', 'description_short', 'price', 'discount', 'archived']
     list_display_links = ['pk', 'name']
@@ -43,6 +48,24 @@ class ProductAdmin(admin.ModelAdmin, ExportAsCSVMixin):
         if len(obj.description) < 40:
             return obj.description
         return obj.description[:40] + '...'
+
+    def import_csv(self, request: HttpRequest) -> HttpResponse:
+        form = CSVImportForm()
+        context = {
+            'form': form,
+        }
+        return render(request, 'admin/csv_form.html', context=context)
+
+    def get_urls(self):
+        urls = super().get_urls()
+        new_urls = [
+            path(
+                "import-products-csv/",
+                self.import_csv,
+                name="import_products_csv"
+            )
+        ]
+        return new_urls + urls
 
 
 class ProductInline(admin.TabularInline):

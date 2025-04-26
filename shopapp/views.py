@@ -1,5 +1,5 @@
 from django.contrib.auth.models import Group
-from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
+from django.http import HttpResponse, HttpRequest, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from timeit import default_timer as timer
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
@@ -137,4 +137,22 @@ class OrdersListView(LoginRequiredMixin, ListView):
 class OrderDetailView(PermissionRequiredMixin, ListView):
     permission_required = ['shopapp.view_order']
     queryset = Order.objects.select_related('user').prefetch_related('products')
+
+
+class ProductsDataExportView(View):
+    def get(self, request: HttpRequest) -> JsonResponse:
+        products = Product.objects.order_by('pk').all()
+        products_data = [
+            {
+                "pk": product.pk,
+                "name": product.name,
+                'price': product.price,
+                "archived": product.archived,
+            }
+            for product in products
+        ]
+        elem = products_data[0]
+        name = elem['name']
+        print("name: ", name)
+        return JsonResponse({"products": products_data})
 
