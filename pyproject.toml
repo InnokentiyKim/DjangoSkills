@@ -5,7 +5,6 @@ description = ""
 authors = [
     {name = "inncent",email = "innokentiykim90@gmail.com"}
 ]
-readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "django (>=5.2,<6.0)",
