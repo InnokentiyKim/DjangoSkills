@@ -26,15 +26,16 @@ DATABASE_DIR.mkdir(exist_ok=True)
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-(x+f7-m(_8s$6%ehfxs)9*1g(#iw#kbxy(e%_4i+cgqk7m@pk!'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-(x+f7-m(_8s$6%ehfxs)9*1g(#iw#kbxy(e%_4i+cgqk7m@pk!')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DJANGO_DEBUG', "0") == "1"
 
 ALLOWED_HOSTS = [
     '0.0.0.0',
     '127.0.0.1',
-]
+] + os.getenv('DJANGO_ALLOWED_HOSTS', '').split(',')
+
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
